@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="convertAll" onclick="convertAll('event')">convertAll</button>
+</body>
+<script>
+    let data = [];
+
+    // Load files
+    function loadFIles(dir,ext = {}) {
+        const fs = require('fs');
+        
+        dir = dir ||'C:/xampp/htdocs/alenzone/uploads/thumbnails/course_thumbnails/';
+
+        fs.readdirSync(dir, {withFileTypes: true}).forEach(file => file.name.toString().endsWith(ext.from) ? data.push(dir + file.name) : 0);
+
+        return ext;
+    }
+
+    let ext = loadFIles('J:/',{
+        from: '.mp3',
+        to: '.mp3'
+    });
+    
+    for (let i = 0; i < data.length; i++) {
+        let element = data[i];
+        //  width="300" height='250'
+        let template = `<audio src="${element}" controls id="img${i}"></audio> <button type="button" onclick="convert(event,img${i}, '${ext.from}', '${ext.to}')">Convert</button>`; document.body.insertAdjacentHTML('beforeend', template)
+    }
+
+    function convertAll(){
+        for (let i = 0; i < data.length; i++) {
+            let element = data[i];
+            convert(null,element);
+        }
+    }
+
+    function  convert(event, odl_dir, from, to) {
+        let element = odl_dir; 
+        let target; target = event !== null ? event.target : null;
+        
+        odl_dir = typeof odl_dir !== 'string' ? String(odl_dir.src.replace('file:///', '')) : odl_dir; 
+        
+        fs.renameSync(odl_dir, odl_dir.replace(ext.from, ext.to)); 
+        
+        console.log('success');
+        target !== null? target.disabled = true: null; 
+};
+
+
+</script>
+
+</html>
